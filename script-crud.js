@@ -107,6 +107,12 @@ function createTask(tarefa){
     editIcon.setAttribute('src','/imagens/edit.png')
     button.appendChild(editIcon)
 
+    button.addEventListener('click',(evento)=>{
+    evento.stopPropagation()
+    selecionaTarefaParaEditar(tarefa,paragraph)
+
+})
+
     li.onclick = ()=> {
     selecionaTarefa(tarefa, li)
 
@@ -151,6 +157,11 @@ localStorage.setItem('tarefas',JSON.stringify(tarefas))
 // função para submeter o evento salvar
 formTask.addEventListener('submit',(evento)=>{
     evento.preventDefault()
+    if(tarefaEmEdicao){
+        tarefaEmEdicao.descricao = textArea.value
+        paragraphEmEdicao.textContent = textArea.value
+    } else { 
+
     const task = {
         descricao:textArea.value,
         concluida:false
@@ -161,7 +172,7 @@ formTask.addEventListener('submit',(evento)=>{
     const taskItem = createTask(task)
     taskListContainer.appendChild(taskItem)
 
-   
+}
     LimparForm()
     updateLocalStorage()
 
