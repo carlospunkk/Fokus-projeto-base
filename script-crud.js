@@ -30,6 +30,13 @@ fill="none" xmlns="http://www.w3.org/2000/svg">
 let tarefaSelecionada = null
 let itemTarefaSelecionada = null
 
+
+
+let tarefaEmEdicao = null
+let paragraphEmEdicao = null 
+
+
+
 const selecionaTarefa =(tarefa , elemento)=>{
    document.querySelectorAll('.app__section-task-list-item-active')
    .forEach(function (button){
@@ -55,9 +62,28 @@ const selecionaTarefa =(tarefa , elemento)=>{
 // limpar formulario 
 
 const LimparForm = () => {
-textArea.value= ''
-formTask.classList.add('hidden')
+    tarefaEmEdicao = null
+    paragraphEmEdicao = null
+    textArea.value= ''
+    formTask.classList.add('hidden')
 }
+
+// tarefa para editar 
+
+const selecionaTarefaParaEditar = (tarefa,elemento) =>{
+    if(tarefaEmEdicao == tarefa){
+        LimparForm()
+        return
+    }
+    formLabel.textContent = 'Editando tarefa'
+    tarefaEmEdicao = tarefa
+    paragraphEmEdicao = elemento
+    textArea.value = tarefa.descricao
+    formTask.classList.remove('hidden')
+}
+
+
+
 
 function createTask(tarefa){
     const li = document.createElement('li')
@@ -72,14 +98,35 @@ function createTask(tarefa){
     paragraph.textContent = tarefa.descricao
 
 
+    // botao edicao
+    const button = document.createElement('button')
+    button.classList.add('app_button-edit') // css
+
+    // icone de edicao 
+    const editIcon = document.createElement('img')
+    editIcon.setAttribute('src','/imagens/edit.png')
+    button.appendChild(editIcon)
+
     li.onclick = ()=> {
     selecionaTarefa(tarefa, li)
 
     }
 
-    
+    svgIcon.addEventListener('click', (event) => {
+        event.stopPropagation()
+        button.setAttribute('disabled', true)
+        li.classList.add('app__section-task-list-item-complete')
+    })
+
+    if(tarefa.concluida){
+        button.setAttribute('disabled',true)
+        li.classList.add('app__section-task-list-item-complete')
+    }
+
+    // dentro de li adiciono nos filhos as classes
     li.appendChild(svgIcon)
     li.appendChild(paragraph)
+    li.appendChild(button)
 
     return li
 }
